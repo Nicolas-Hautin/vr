@@ -6,7 +6,7 @@
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
   </head>
   <body>
-    <a-scene>
+    <a-scene fog="type: linear; color: #ffffff; near: 0; far: 50" background="color: #000000">
       <a-assets>
         <a-asset-item id="chaise" src="./assets/Couch Small.glb"></a-asset-item>
         <a-asset-item id="table" src="./assets/Table.glb"></a-asset-item>
@@ -19,14 +19,14 @@
 
 
       <!-- Screen -->
-      <a-plane src="#video" height="10" width="20" position="0 4 -10" rotation=" 0 0 0 "></a-plane>  
-      <a-plane color="#000000" height="10" width="20" position="-10 4 0" rotation="0 90 0"></a-plane>
+      <a-plane src="#video" height="10" width="20" position="0 4 -10" rotation="0 0 0" material="emissive: #000000; emissiveIntensity: 1"></a-plane>         <a-plane color="#000000" height="10" width="20" position="-10 4 0" rotation="0 90 0"></a-plane>
       <a-plane color="#000000" height="10" width="20" position="10 4 0" rotation="0 -90 0"></a-plane>
 
       <a-plane color="#000000" height="10" width="20" position="0 4 10" rotation="0 180 0" side="double"></a-plane>
       
 
-      <!-- Tables -->
+
+     <!-- Tables -->
       <a-entity gltf-model="#table" position="-6.71 0 7.689" scale=".4 .3 .42 "></a-entity>
       <a-entity gltf-model="#table" position="6.71 0 -5" scale=".4 .3 .42 "></a-entity>
       <a-entity gltf-model="#table" position="6.71 0 7.689" scale=".4 .3 .42 "></a-entity>
