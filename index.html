@@ -11,9 +11,10 @@
       <a-assets>
         <a-asset-item id="labyrinthe" src="./assets/labyrinthe.glb"></a-asset-item>
         <a-asset-item id="navmesh" src="./assets/labyrinthe-navmesh2.glb"></a-asset-item>
+        <img id="affiche" src="./assets/affiche.png">
       </a-assets>
 
-      <a-entity id="rig" movement-controls="constrainToNavMesh: true;">
+      <a-entity id="rig" movement-controls="constrainToNavMesh: true;" dynamic-body>
         <a-entity
           camera
           position="0 1 0"
@@ -24,8 +25,16 @@
           <a-entity
             id="timer"
             text="value: 05:00; color: white; align: center;"
-            position="1.3 0.7 -1"
+            position="0 -0.5 -1"
             visible="false">
+          </a-entity>
+
+          <!-- Compteur d'items collectés -->
+          <a-entity
+            id="item-counter"
+            text="value: Chercher 3 affiches dans le labyrinthe pour sortir; color: white; align: center;"
+            position="0 0.5 -1"
+            visible="true">
           </a-entity>
         </a-entity>
 
@@ -62,10 +71,16 @@
         scale="3 3 3"
         gltf-model="#navmesh">
       </a-entity>
-   
 
+      <!-- Items collectables -->
+      <a-entity id="item1" geometry="primitive: plane; height: 1; width: 1" material="src: #affiche" position="5 1 -8.904" class="collectable"></a-entity>
+      <a-entity id="item2" geometry="primitive: plane; height: 1; width: 1" material="src: #affiche" position="7 1 -8.904" class="collectable"></a-entity>
+      <a-entity id="item3" geometry="primitive: plane; height: 1; width: 1" material="src: #affiche" position="9 1 -8.904" class="collectable"></a-entity>
 
       <script>
+        let timerInterval;
+        let itemsCollected = 0;
+
         AFRAME.registerComponent('start-timer', {
           init: function () {
             const timer = document.querySelector('#timer');
@@ -89,6 +104,30 @@
               }
             }, 1000);
           }
+        });
+
+        AFRAME.registerComponent('collect-item', {
+  init: function () {
+    const el = this.el;
+    const itemCounter = document.querySelector('#item-counter');
+
+    el.addEventListener('click', () => {
+      itemsCollected += 1;
+      let itemText = '';
+      if (itemsCollected === 1) {
+        itemText = `${itemsCollected} affiche récoltée sur 3`;
+      } else {
+        itemText = `${itemsCollected} affiches récoltées sur 3`;
+      }
+      itemCounter.setAttribute('text', `value: ${itemText}`);
+      el.parentNode.removeChild(el);
+      console.log(`Item collected. Total items: ${itemsCollected}`);
+    });
+  }
+});
+
+        document.querySelectorAll('.collectable').forEach(item => {
+          item.setAttribute('collect-item', '');
         });
 
         document.querySelector('a-scene').setAttribute('start-timer', '');
