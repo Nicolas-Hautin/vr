@@ -12,6 +12,8 @@
         <a-asset-item id="labyrinthe" src="./assets/labyrinthe.glb"></a-asset-item>
         <a-asset-item id="navmesh" src="./assets/labyrinthe-navmesh2.glb"></a-asset-item>
         <img id="affiche" src="./assets/affiche.png">
+        <a-asset-item id="mur" src="./assets/labyrinthe-mur.glb"></a-asset-item>
+
       </a-assets>
 
       <a-entity id="rig" movement-controls="constrainToNavMesh: true;" dynamic-body>
@@ -100,31 +102,39 @@
               } else {
                 clearInterval(interval);
                 timer.setAttribute('visible', false);
-                alert('Temps écoulé !');
+                alert('Temps &eacute;coul&eacute; !');
               }
             }, 1000);
           }
         });
 
         AFRAME.registerComponent('collect-item', {
-  init: function () {
-    const el = this.el;
-    const itemCounter = document.querySelector('#item-counter');
+          init: function () {
+            const el = this.el;
+            const itemCounter = document.querySelector('#item-counter');
 
-    el.addEventListener('click', () => {
-      itemsCollected += 1;
-      let itemText = '';
-      if (itemsCollected === 1) {
-        itemText = `${itemsCollected} affiche récoltée sur 3`;
-      } else {
-        itemText = `${itemsCollected} affiches récoltées sur 3`;
-      }
-      itemCounter.setAttribute('text', `value: ${itemText}`);
-      el.parentNode.removeChild(el);
-      console.log(`Item collected. Total items: ${itemsCollected}`);
-    });
-  }
-});
+            el.addEventListener('click', () => {
+              itemsCollected += 1;
+              let itemText = '';
+              if (itemsCollected === 1) {
+                itemText = `${itemsCollected} affiche récoltée sur 3`;
+                // Créer et ajouter le mur à la scène
+                const scene = document.querySelector('a-scene');
+                const mur = document.createElement('a-entity');
+                mur.setAttribute('gltf-model', '#mur');
+                mur.setAttribute('position', '0 0 30.12');
+                mur.setAttribute('scale', '3 3 3');
+                mur.setAttribute('rotation', '0 -90 0');
+                scene.appendChild(mur);
+              } else {
+                itemText = `${itemsCollected} affiches récoltées sur 3`;
+              }
+              itemCounter.setAttribute('text', `value: ${itemText}`);
+              el.parentNode.removeChild(el);
+              console.log(`Item collected. Total items: ${itemsCollected}`);
+            });
+          }
+        });
 
         document.querySelectorAll('.collectable').forEach(item => {
           item.setAttribute('collect-item', '');
