@@ -1,26 +1,72 @@
-
 <!DOCTYPE html>
 <html>
   <head>
-    <title>My A-Frame Cinema Scene</title>
-    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <title>My A-Frame Labyrinth Scene</title>
+    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.5.4/dist/aframe-extras.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aframe-environment-component@1.3.7/dist/aframe-environment-component.min.js"></script>
   </head>
   <body>
-    <a-scene fog="type: linear; color: #ffffff; near: 0; far: 50" background="color: #000000">
+    <a-scene background="color: #000000">
       <a-assets>
-        <a-asset-item id="chaise" src="./assets/labyrinthe.glb"></a-asset-item>
+        <!-- Modèle 3D du labyrinthe -->
+        <a-asset-item id="labyrinthe" src="./assets/labyrinthe-navmesh2.glb"></a-asset-item>
 
-       </a-assets>
+        <!-- Zone de collision pour la navigation -->
+        <a-asset-item id="navmesh" src="./assets/labyrinthe-navmesh.glb"></a-asset-item>
+      </a-assets>
 
 
-      <!-- Screen -->
+      <!-- Caméra ... -->
+<a-entity id="rig" movement-controls="constrainToNavMesh: true;"  >
+    <a-entity
+      camera
+      position="-0.33 1.3 0"
+      
+      look-controls="pointerLockEnabled: true"
+          
+    >
+      <a-cursor></a-cursor>
+    </a-entity>
+    <a-entity
+    occulus-touch-controls="hand: left"
+      laser-controls="hand: right"
+      raycaster="objects: .collidable; showline: true; far: 10"
+      line="color: red"
+    ></a-entity>
+    <a-entity
+    occulus-touch-controls="hand: right"
+      laser-controls="hand: left"
+      raycaster="objects: .collidable; showline: true; far: 10"
+      line="color: red"
+    ></a-entity>
+  </a-entity>
 
-      <a-entity gltf-model="#chaise" position="0 0 0" rotation="0 -90 0"></a-entity>
-  
 
-      <!-- Floor -->
-      <a-plane color="#000000" height="20" width="20" position="0 -1 0" rotation="-90 0 0"></a-plane>
-      <a-camera position="0 1 7" rotation="-45 0 0"></a-camera>
+
+      <!-- Modèle du labyrinthe -->
+      <a-entity 
+        gltf-model="#labyrinthe" 
+        position="0 0 -50" 
+        rotation="0 90 0" 
+        scale="3 3 3">
+      </a-entity>
+
+      <!-- Nav mesh pour la navigation -->
+
+      <a-entity
+      nav-mesh
+      normal-material
+      visible="false"
+      position=".036 0 -50"
+      rotation="0 90 0"
+      scale="3 3 3"
+      gltf-model="#navmesh"
+    ></a-entity>
+
+      <!-- Sol -->
+     
+      <!-- Player (avec contrôles de mouvement) -->
 
     </a-scene>
   </body>
