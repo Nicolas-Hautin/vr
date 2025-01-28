@@ -14,11 +14,16 @@
         <a-asset-item id="navmesh2" src="./assets/labyrinthe-navmesh2.glb"></a-asset-item>
         <a-asset-item id="navmesh3" src="./assets/labyrinthe-navmesh3.glb"></a-asset-item>
         <a-asset-item id="mur" src="./assets/labyrinthe-mur.glb"></a-asset-item>
-        <a-asset-item id="mur2" src="./assets/labyrinthe-mur2.glb"></a-asset-item>
+        <a-asset-item id="mur2" src="./assets/labyrinthe-mur.glb"></a-asset-item>
         <img id="affiche" src="./assets/affiche.png">
+        <audio id="background-music" src="./assets/sound.mp3"></audio>
+
       </a-assets>
 
+      <a-sound src="#background-music" autoplay="true" loop="true"></a-sound>
+
       <a-entity id="rig" movement-controls="constrainToNavMesh: true;" dynamic-body>
+        
         <a-entity
           camera
           position="0 1 0"
@@ -107,7 +112,7 @@
             const rig = document.querySelector('#rig');
             const teleportRoom = document.querySelector('#teleport-room');
             const itemCounter = document.querySelector('#item-counter');
-            let timeRemaining = 3; // Pour mettre 5min
+            let timeRemaining = 300; // Pour mettre 5min
 
             function updateTimerDisplay() {
               const minutes = Math.floor(timeRemaining / 60);
@@ -143,48 +148,53 @@
         });
 
         AFRAME.registerComponent('collect-item', {
-          init: function () {
-            const el = this.el;
-            const itemCounter = document.querySelector('#item-counter');
+  init: function () {
+    const el = this.el;
+    const itemCounter = document.querySelector('#item-counter');
 
-            el.addEventListener('click', () => {
-              itemsCollected += 1;
-              let itemText = '';
-              const navmeshEntity = document.querySelector('#navmesh-entity');
-              if (itemsCollected === 1) {
-                itemText = `${itemsCollected} affiche récoltée sur 3`;
-                // Créer et ajouter le mur à la scène
-                const scene = document.querySelector('a-scene');
-                const mur = document.createElement('a-entity');
-                mur.setAttribute('gltf-model', '#mur');
-                mur.setAttribute('position', '0 0 30.12');
-                mur.setAttribute('scale', '3 3 3');
-                mur.setAttribute('rotation', '0 -90 0');
-                scene.appendChild(mur);
-                // Créer et ajouter le deuxième mur à la scène
-                mur2 = document.createElement('a-entity');
-                mur2.setAttribute('gltf-model', '#mur2');
-                mur2.setAttribute('position', '5 0 30.12');
-                mur2.setAttribute('scale', '3 3 3');
-                mur2.setAttribute('rotation', '0 -90 0');
-                scene.appendChild(mur2);
-                // Changer le navmesh pour utiliser navmesh3
-                navmeshEntity.setAttribute('gltf-model', '#navmesh3');
-              } else if (itemsCollected === 3) {
-                itemText = `Vous avez les trois affiches, vous pouvez maintenant sortir`;
-                // Changer le navmesh pour utiliser navmesh2
-                navmeshEntity.setAttribute('gltf-model', '#navmesh2');
-                // Supprimer le deuxième mur
-                mur2.parentNode.removeChild(mur2);
-              } else {
-                itemText = `${itemsCollected} affiches récoltées sur 3`;
-              }
-              itemCounter.setAttribute('text', `value: ${itemText}`);
-              el.parentNode.removeChild(el);
-              console.log(`Item collected. Total items: ${itemsCollected}`);
-            });
-          }
-        });
+    el.addEventListener('click', () => {
+      itemsCollected += 1;
+      let itemText = '';
+      const navmeshEntity = document.querySelector('#navmesh-entity');
+      if (itemsCollected === 1) {
+        itemText = `${itemsCollected} affiche recoltee sur 3`;
+        // Créer et ajouter le mur à la scène
+        const scene = document.querySelector('a-scene');
+        const mur = document.createElement('a-entity');
+        mur.setAttribute('gltf-model', '#mur');
+        mur.setAttribute('position', '0 0 30.12');
+        mur.setAttribute('scale', '3 3 3');
+        mur.setAttribute('rotation', '0 -90 0');
+        scene.appendChild(mur);
+        // Créer et ajouter le deuxième mur à la scène
+        mur2 = document.createElement('a-entity');
+        mur2.setAttribute('gltf-model', '#mur2');
+        mur2.setAttribute('position', '-21.364 0 -39.048');
+        mur2.setAttribute('scale', '3 3 3');
+        mur2.setAttribute('rotation', '0 -90 0');
+        scene.appendChild(mur2);
+        // Changer le navmesh pour utiliser navmesh3
+        navmeshEntity.setAttribute('gltf-model', '#navmesh3');
+      } else if (itemsCollected === 3) {
+        itemText = `Vous avez les trois affiches, vous pouvez maintenant sortir`;
+        // Changer le navmesh pour utiliser navmesh2
+        navmeshEntity.setAttribute('gltf-model', '#navmesh2');
+        // Supprimer le deuxième mur
+        mur2.parentNode.removeChild(mur2);
+        // Afficher le message pendant 10 secondes
+        setTimeout(() => {
+          itemCounter.setAttribute('text', 'value', 'Trouve la sortie !!!');
+        }, 10000); // 10000 milliseconds = 10 seconds
+      } else {
+        itemText = `${itemsCollected} affiches recoltees sur 3`;
+      }
+      itemCounter.setAttribute('text', `value: ${itemText}`);
+      itemCounter.setAttribute('visible', 'true');
+      el.parentNode.removeChild(el);
+      console.log(`Item collected. Total items: ${itemsCollected}`);
+    });
+  }
+});
 
         // Redémarrer la page lorsque le cube est cliqué
         AFRAME.registerComponent('restart-button', {
