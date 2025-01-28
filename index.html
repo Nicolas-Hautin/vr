@@ -27,7 +27,7 @@
           <a-entity
           id="timer"
           text="value: 05:00; color: white; align: center; width: 1"
-          position="0.7 0.65 -1"
+          position="0.7 0.1 -1.2"
           visible="false">
         </a-entity>
 
@@ -35,7 +35,7 @@
           <a-entity
             id="item-counter"
             text="value: Chercher 3 affiches dans le labyrinthe pour sortir; color: white; align: center;"
-            position="-0.5 0.65 -1"
+            position="-0.5 0.1 -1.2"
             visible="true">
           </a-entity>
         </a-entity>
@@ -108,7 +108,7 @@
           }
         });
 
-        AFRAME.registerComponent('collect-item', {
+  AFRAME.registerComponent('collect-item', {
   init: function () {
     const el = this.el;
     const itemCounter = document.querySelector('#item-counter');
