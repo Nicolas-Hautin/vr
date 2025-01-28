@@ -7,7 +7,7 @@
     <script src="https://cdn.jsdelivr.net/npm/aframe-environment-component@1.3.7/dist/aframe-environment-component.min.js"></script>
   </head>
   <body>
-    <a-scene background="color: #000000">
+    <a-scene  environment="preset: forest; playArea: 1.5; dressingAmount: 0; dressing: none; groundColor: #228B22;">
       <a-assets>
         <a-asset-item id="labyrinthe" src="./assets/labyrinthe.glb"></a-asset-item>
         <a-asset-item id="navmesh" src="./assets/labyrinthe-navmesh.glb"></a-asset-item>
@@ -70,7 +70,7 @@
         id="navmesh-entity"
         nav-mesh
         normal-material
-        visible="true"
+        visible="false"
         position=".036 0.03 -50"
         rotation="0 90 0"
         scale="3 3 3"
@@ -82,6 +82,20 @@
       <a-entity id="item2" geometry="primitive: plane; height: 1; width: 1" material="src: #affiche" position="2 1 -24.754" class="collectable"></a-entity>
       <a-entity id="item3" geometry="primitive: plane; height: 1; width: 1" material="src: #affiche" position="4 1 -24.754" class="collectable"></a-entity>
 
+      <!-- Pièce de téléportation -->
+      <a-entity id="teleport-room" position="0 -5 0" visible="false">
+        <a-entity text="value: Tu as perdu; color: red; align: center; width: 2;" position="0 -1.5 -3"></a-entity>
+        <a-entity text="value: Clique sur le bouton pour relancer la partie; color: white; align: center; width: 2;" position="0 -2.2 -3"></a-entity>
+        <a-box position="0 -3 -3" depth="0.5" height="0.5" width="0.5" color="green" class="restart-button"></a-box>
+        <a-plane position="0 -4 -1.395" rotation="-90 0 0" width="5" height="5" color="#000000"></a-plane>
+        <a-plane position="-2.366 -3 -1.25" rotation="0 90 0" width="5" height="5" color="#000000"></a-plane>
+        <a-plane position="2.507 -3 -1.25" rotation="0 -90 0" width="5" height="5" color="#000000"></a-plane>
+        <a-plane position="0 -2.3 -3.737" rotation="0 0 0" width="5" height="5" color="#000000"></a-plane>
+        <a-plane position="0 -2.059 1.140" rotation="180 0 0" width="5" height="5" color="#000000"></a-plane>
+        <a-plane position="0 -0.5 -1.2" rotation="90 0 0" width="5" height="5" color="#000000"></a-plane>
+
+      </a-entity>
+
       <script>
         let timerInterval;
         let itemsCollected = 0;
@@ -91,6 +105,8 @@
           init: function () {
             const timer = document.querySelector('#timer');
             const rig = document.querySelector('#rig');
+            const teleportRoom = document.querySelector('#teleport-room');
+            const itemCounter = document.querySelector('#item-counter');
             let timeRemaining = 300; // Pour mettre 5min
 
             function updateTimerDisplay() {
@@ -99,8 +115,14 @@
               timer.setAttribute('text', `value: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`);
             }
 
+            function disableMovement() {
+              rig.removeAttribute('movement-controls');
+            }
+
             function teleportPlayer() {
-              rig.setAttribute('position', '0 5 0');
+              rig.setAttribute('position', '0 -8 0');
+              teleportRoom.setAttribute('visible', true);
+              itemCounter.setAttribute('visible', false);
             }
 
             timer.setAttribute('visible', true);
@@ -108,6 +130,9 @@
               if (timeRemaining > 0) {
                 timeRemaining -= 1;
                 updateTimerDisplay();
+                if (timeRemaining === 1) {
+                  disableMovement();
+                }
               } else {
                 clearInterval(interval);
                 timer.setAttribute('visible', false);
@@ -127,7 +152,7 @@
               let itemText = '';
               const navmeshEntity = document.querySelector('#navmesh-entity');
               if (itemsCollected === 1) {
-                itemText = `${itemsCollected} affiche récoltee sur 3`;
+                itemText = `${itemsCollected} affiche récoltée sur 3`;
                 // Créer et ajouter le mur à la scène
                 const scene = document.querySelector('a-scene');
                 const mur = document.createElement('a-entity');
@@ -161,12 +186,43 @@
           }
         });
 
+        // Redémarrer la page lorsque le cube est cliqué
+        AFRAME.registerComponent('restart-button', {
+          init: function () {
+            this.el.addEventListener('click', () => {
+              location.reload();
+            });
+          }
+        });
+
+        // Composant pour forcer la téléportation
+        AFRAME.registerComponent('force-teleport', {
+          init: function () {
+            const rig = document.querySelector('#rig');
+            const teleportRoom = document.querySelector('#teleport-room');
+            const itemCounter = document.querySelector('#item-counter');
+            this.el.addEventListener('click', () => {
+              rig.setAttribute('position', '0 5 0');
+              teleportRoom.setAttribute('visible', true);
+              itemCounter.setAttribute('visible', false);
+            });
+            this.el.addEventListener('componentchanged', () => {
+              rig.setAttribute('position', '0 5 0');
+              teleportRoom.setAttribute('visible', true);
+              itemCounter.setAttribute('visible', false);
+            });
+          }
+        });
+
         document.querySelectorAll('.collectable').forEach(item => {
           item.setAttribute('collect-item', '');
         });
 
+        document.querySelector('.restart-button').setAttribute('restart-button', '');
+
         document.querySelector('a-scene').setAttribute('start-timer', '');
       </script>
+
 
     </a-scene>
   </body>
