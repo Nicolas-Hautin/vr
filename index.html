@@ -16,6 +16,10 @@
         <a-asset-item id="mur" src="./assets/labyrinthe-mur.glb"></a-asset-item>
         <a-asset-item id="mur2" src="./assets/labyrinthe-mur.glb"></a-asset-item>
         <img id="affiche" src="./assets/affiche.png">
+
+        <img id="affiche1" src="./assets/affiche1.png">
+        <img id="affiche2" src="./assets/affiche2.png">
+        <img id="affiche3" src="./assets/affiche3.png">
         <audio id="background-music" src="./assets/sound.mp3"></audio>
 
       </a-assets>
@@ -41,7 +45,7 @@
           <!-- Compteur d'items collectés -->
           <a-entity
             id="item-counter"
-            text="value: Chercher 3 affiches dans le labyrinthe pour sortir; color: white; align: center;"
+            text="value: Chercher 3 affiches des moments cles du film dans le labyrinthe pour sortir; color: white; align: center; width: 0.7"
             position="-0.5 0.1 -1.2"
             visible="true">
           </a-entity>
@@ -83,9 +87,9 @@
       </a-entity>
 
       <!-- Items collectables -->
-      <a-entity id="item1" geometry="primitive: plane; height: 1; width: 1" material="src: #affiche" position="0 1 -24.754" class="collectable"></a-entity>
-      <a-entity id="item2" geometry="primitive: plane; height: 1; width: 1" material="src: #affiche" position="2 1 -24.754" class="collectable"></a-entity>
-      <a-entity id="item3" geometry="primitive: plane; height: 1; width: 1" material="src: #affiche" position="4 1 -24.754" class="collectable"></a-entity>
+      <a-entity id="item1" geometry="primitive: plane; height: 1; width: 1" material="src: #affiche1" position="-4 1 -24.8015" class="collectable"></a-entity>
+      <a-entity id="item2" geometry="primitive: plane; height: 1; width: 1" material="src: #affiche2" position="14 1 -44.674" class="collectable"></a-entity>
+      <a-entity id="item3" geometry="primitive: plane; height: 1; width: 1" material="src: #affiche3" position="-7.1 1 -44.684" class="collectable"></a-entity>
 
       <!-- Pièce de téléportation -->
       <a-entity id="teleport-room" position="0 -5 0" visible="false">
