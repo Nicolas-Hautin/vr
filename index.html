@@ -26,8 +26,8 @@
           <!-- Le timer -->
           <a-entity
           id="timer"
-          text="value: 05:00; color: white; align: center; width: 0.3"
-          position="0.2 0.1 -0.5"
+          text="value: 05:00; color: white; align: center; width: 1"
+          position="0.7 0.5 -1"
           visible="false">
         </a-entity>
 
@@ -35,7 +35,7 @@
           <a-entity
             id="item-counter"
             text="value: Chercher 3 affiches dans le labyrinthe pour sortir; color: white; align: center;"
-            position="-1 0.65 -1"
+            position="-0.8 0.5 -1"
             visible="true">
           </a-entity>
         </a-entity>
@@ -117,7 +117,7 @@
       itemsCollected += 1;
       let itemText = '';
       if (itemsCollected === 1) {
-        itemText = `${itemsCollected} affiche récoltée sur 3`;
+        itemText = `${itemsCollected} affiche recoltee sur 3`;
         // Créer et ajouter le mur à la scène
         const scene = document.querySelector('a-scene');
         const mur = document.createElement('a-entity');
@@ -129,7 +129,7 @@
       } else if (itemsCollected === 3) {
         itemText = `Vous avez les trois affiches, vous pouvez maintenant sortir`;
       } else {
-        itemText = `${itemsCollected} affiches récoltées sur 3`;
+        itemText = `${itemsCollected} affiches recoltees sur 3`;
       }
       itemCounter.setAttribute('text', `value: ${itemText}`);
       el.parentNode.removeChild(el);
