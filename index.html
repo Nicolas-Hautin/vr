@@ -29,6 +29,7 @@
       <a-entity id="rig" movement-controls="constrainToNavMesh: true;" dynamic-body>
         
         <a-entity
+          hit-test
           camera
           position="0 1 0"
           look-controls="pointerLockEnabled: false">
@@ -65,6 +66,9 @@
           line="color: red">
         </a-entity>
       </a-entity>
+
+      <!-- Texte pour indiquer si le joueur a gagner -->
+      <a-text position="-23.011 1 -86.677" value="No Hit"></a-text>
 
       <!-- Modèle du labyrinthe -->
       <a-entity 
@@ -116,7 +120,7 @@
             const rig = document.querySelector('#rig');
             const teleportRoom = document.querySelector('#teleport-room');
             const itemCounter = document.querySelector('#item-counter');
-            let timeRemaining = 300; // Pour mettre 5min
+            let timeRemaining = 30; // Pour mettre 5min
 
             function updateTimerDisplay() {
               const minutes = Math.floor(timeRemaining / 60);
@@ -235,6 +239,26 @@
         document.querySelector('.restart-button').setAttribute('restart-button', '');
 
         document.querySelector('a-scene').setAttribute('start-timer', '');
+
+//code pour la gagne
+        AFRAME.registerComponent("hit-test", {
+        init: function () {},
+        tick: function () {
+          const position = this.el.getAttribute("position");
+          if (
+            position.x > 0 &&
+            position.x < 5 &&
+            position.z > 0 &&
+            position.z < 5
+          ) {
+            console.log("hit");
+            document.querySelector("a-text").setAttribute("value", "Hit");
+          } else {
+            console.log("no hit");
+            document.querySelector("a-text").setAttribute("value", "No Hit");
+          }
+        },
+      });
       </script>
 
 
