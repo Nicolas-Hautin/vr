@@ -7,8 +7,8 @@
     <script src="https://cdn.jsdelivr.net/npm/aframe-environment-component@1.3.7/dist/aframe-environment-component.min.js"></script>
   </head>
   <body>
-    <a-scene>
-      <a-assets>
+    <a-scene environment="preset: forest; playArea: 1.5; dressingAmount: 0; dressing: none; groundColor: #228B22;">
+      <a-assets >
         <a-asset-item id="labyrinthe" src="./assets/labyrinthe.glb"></a-asset-item>
         <a-asset-item id="navmesh" src="./assets/labyrinthe-navmesh.glb"></a-asset-item>
         <a-asset-item id="navmesh2" src="./assets/labyrinthe-navmesh2.glb"></a-asset-item>
@@ -18,10 +18,15 @@
         <img id="affiche1" src="./assets/affiche1.png">
         <img id="affiche2" src="./assets/affiche2.png">
         <img id="affiche3" src="./assets/affiche3.png">
+
         <audio id="background-music" src="./assets/sound.mp3"></audio>
+        <audio id="victory-music" src="./assets/victoire.mp3"></audio>        
       </a-assets>
 
+
       <a-sound src="#background-music" autoplay="true" loop="true"></a-sound>
+      <a-sound id="victory-sound" src="#victory-music" autoplay="false"></a-sound>
+
 
       <a-entity id="rig" movement-controls="constrainToNavMesh: true;" dynamic-body>
         <a-entity
@@ -242,14 +247,17 @@
 
 
 
-      // Enregistrement d'un composant A-Frame appelé "hit-test"
-      AFRAME.registerComponent("hit-test", {
+     // Enregistrement d'un composant A-Frame appelé "hit-test"
+     AFRAME.registerComponent("hit-test", {
         init: function () {},
         tick: function () {
           const position = this.el.getAttribute("position");
+          console.log("Current position:", position); // Ajoutez ce log pour vérifier la position
           const timer = document.querySelector('#timer');
           const itemCounter = document.querySelector('#item-counter');
           const centerText = document.querySelector('#center-text');
+          const backgroundMusic = document.querySelector('a-sound[src="#background-music"]');
+          const victorySound = document.querySelector('#victory-sound');
           if (
             position.x > -25 &&
             position.x < 20 &&
@@ -261,12 +269,16 @@
             centerText.setAttribute("visible", "true");
             timer.setAttribute("visible", "false");
             itemCounter.setAttribute("visible", "false");
+            backgroundMusic.components.sound.stopSound();
+            victorySound.components.sound.playSound();
           } else {
             console.log("T'as pas gagné");
             centerText.setAttribute("value", "");
             centerText.setAttribute("visible", "false");
             timer.setAttribute("visible", "true");
             itemCounter.setAttribute("visible", "true");
+            backgroundMusic.components.sound.playSound();
+            victorySound.components.sound.stopSound();
           }
         },
       });
