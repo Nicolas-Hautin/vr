@@ -279,10 +279,10 @@
       positionText.setAttribute('value', `Position: x=${position.x.toFixed(2)}, y=${position.y.toFixed(2)}, z=${position.z.toFixed(2)}`);
       
       if (
-        position.x > -25 &&
+        position.x > -45 &&
         position.x < 20 &&
         position.z > -90 &&
-        position.z < -80
+        position.z < -75
       ) {
         console.log("Tu es sorti du labyrinthe");
         centerText.setAttribute("value", "Vous avez gagne !");
