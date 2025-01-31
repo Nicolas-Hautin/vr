@@ -8,8 +8,7 @@
   </head>
   <body>
     <a-scene environment="preset: goldmine; ground: flat; groundColor: #228B22; dressing: trees; dressingColor: #006400;">
-      <a-assets>
-        <a-asset-item id="labyrinthe" src="./assets/labyrinthe.glb"></a-asset-item>
+      <a-asset-item id="labyrinthe" src="./assets/labyrinthe.glb"></a-asset-item>
         <a-asset-item id="navmesh" src="./assets/labyrinthe-navmesh.glb"></a-asset-item>
         <a-asset-item id="navmesh2" src="./assets/labyrinthe-navmesh2.glb"></a-asset-item>
         <a-asset-item id="navmesh3" src="./assets/labyrinthe-navmesh3.glb"></a-asset-item>
@@ -23,12 +22,12 @@
         <audio id="victory-music" src="./assets/victoire.mp3"></audio>        
       </a-assets>
 
-      <a-sky color="#87CEEB"></a-sky> <!-- Utilisez un ciel bleu -->
 
       <a-sound src="#background-music" autoplay="true" loop="true"></a-sound>
       <a-sound id="victory-sound" src="#victory-music" autoplay="false"></a-sound>
 
-      <a-entity id="rig" movement-controls="constrainToNavMesh: true; acceleration: 50" dynamic-body>
+
+      <a-entity id="rig" movement-controls="constrainToNavMesh: true;" dynamic-body>
         <a-entity
           hit-test
           camera
@@ -53,12 +52,6 @@
             position="-0.5 0.1 -1.2"
             visible="true">
           </a-entity>
-
-          <!-- Texte pour afficher les messages de la console -->
-          <a-text id="console-text" position="0 -0.5 -1" value="" color="yellow" width="2"></a-text>
-
-          <!-- Texte pour afficher la position du joueur -->
-          <a-text id="position-text" position="0 -0.5 -2" value="" color="white" width="2"></a-text>
         </a-entity>
 
         <a-entity
@@ -76,17 +69,7 @@
         </a-entity>
       </a-entity>
 
-      <!-- Texte pour indiquer si le joueur a gagné -->
-      <a-text id="gagne" position="0 1 -20" value="No Hit"></a-text>
 
-      <!-- Ajoutez un plan pour visualiser la zone de "Hit" -->
-      <a-plane
-        color="#00FF00"
-        position="-22.5 0 -85"
-        width="5"
-        height="10"
-        rotation="-90 0 0"
-      ></a-plane>
 
       <!-- Modèle du labyrinthe -->
       <a-entity 
@@ -126,18 +109,13 @@
         <a-plane position="0 -0.5 -1.2" rotation="90 0 0" width="5" height="5" color="#000000"></a-plane>
       </a-entity>
 
+      <!-- Texte "Vous avez gagné" en vert à la position 0 0 0 -->
+<a-text value="Vous avez gagne !!!" color="green" position="-21.470 1.500 -86.443"></a-text>
+
       <script>
         let timerInterval;
         let itemsCollected = 0;
         let mur2;
-
-        // Rediriger les messages de la console vers l'élément <a-text>
-        const originalConsoleLog = console.log;
-        console.log = function(message) {
-          originalConsoleLog.apply(console, arguments);
-          const consoleText = document.querySelector('#console-text');
-          consoleText.setAttribute('value', message);
-        };
 
         AFRAME.registerComponent('start-timer', {
           init: function () {
@@ -240,19 +218,19 @@
 
         // Composant pour forcer la téléportation
         AFRAME.registerComponent('force-teleport', {
-          init: function () {
-            const rig = document.querySelector('#rig');
-            const teleportRoom = document.querySelector('#teleport-room');
-            const itemCounter = document.querySelector('#item-counter');
-            const teleportPlayer = () => {
-              rig.setAttribute('position', '0 -10 0'); // Changez cette ligne pour ajuster la position
-              teleportRoom.setAttribute('visible', true);
-              itemCounter.setAttribute('visible', false);
-            };
-            this.el.addEventListener('click', teleportPlayer);
-            this.el.addEventListener('componentchanged', teleportPlayer);
-          }
-        });
+  init: function () {
+    const rig = document.querySelector('#rig');
+    const teleportRoom = document.querySelector('#teleport-room');
+    const itemCounter = document.querySelector('#item-counter');
+    const teleportPlayer = () => {
+      rig.setAttribute('position', '0 -10 0'); // Changez cette ligne pour ajuster la position
+      teleportRoom.setAttribute('visible', true);
+      itemCounter.setAttribute('visible', false);
+    };
+    this.el.addEventListener('click', teleportPlayer);
+    this.el.addEventListener('componentchanged', teleportPlayer);
+  }
+});
 
         document.querySelectorAll('.collectable').forEach(item => {
           item.setAttribute('collect-item', '');
@@ -262,47 +240,47 @@
 
         document.querySelector('a-scene').setAttribute('start-timer', '');
 
-        // Enregistrement d'un composant A-Frame appelé "hit-test"
-        AFRAME.registerComponent("hit-test", {
-    init: function () {},
-    tick: function () {
-      const position = this.el.getAttribute("position");
-      console.log("Current position:", position); // Ajoutez ce log pour vérifier la position
-      const timer = document.querySelector('#timer');
-      const itemCounter = document.querySelector('#item-counter');
-      const centerText = document.querySelector('#center-text');
-      const positionText = document.querySelector('#position-text');
-      const backgroundMusic = document.querySelector('a-sound[src="#background-music"]');
-      const victorySound = document.querySelector('#victory-sound');
-      
-      // Mettre à jour la position du joueur
-      positionText.setAttribute('value', `Position: x=${position.x.toFixed(2)}, y=${position.y.toFixed(2)}, z=${position.z.toFixed(2)}`);
-      
-      if (
-        position.x > -45 &&
-        position.x < 20 &&
-        position.z > -90 &&
-        position.z < -75
-      ) {
-        console.log("Tu es sorti du labyrinthe");
-        centerText.setAttribute("value", "Vous avez gagne !");
-        centerText.setAttribute("visible", "true");
-        timer.setAttribute("visible", "false");
-        itemCounter.setAttribute("visible", "false");
-        backgroundMusic.components.sound.stopSound();
-        victorySound.components.sound.playSound();
-      } else {
-        console.log("T'as pas gagne");
-        centerText.setAttribute("value", "");
-        centerText.setAttribute("visible", "false");
-        timer.setAttribute("visible", "true");
-        itemCounter.setAttribute("visible", "true");
-        backgroundMusic.components.sound.playSound();
-        victorySound.components.sound.stopSound();
-      }
-    },
-  });
+
+
+     AFRAME.registerComponent("hit-test", {
+        init: function () {},
+        tick: function () {
+          const position = this.el.getAttribute("position");
+          console.log("Current position:", position);
+          const timer = document.querySelector('#timer');
+          const itemCounter = document.querySelector('#item-counter');
+          const centerText = document.querySelector('#center-text');
+          const backgroundMusic = document.querySelector('a-sound[src="#background-music"]');
+          const victorySound = document.querySelector('#victory-sound');
+          if (
+            position.x > -30 &&
+            position.x < 20 &&
+            position.z > -94 &&
+            position.z < -80
+          ) {
+            console.log("Tu es sorti du labyrinthe");
+            centerText.setAttribute("value", "Vous avez gagne !");
+            centerText.setAttribute("visible", "true");
+            timer.setAttribute("visible", "false");
+            itemCounter.setAttribute("visible", "false");
+            backgroundMusic.components.sound.stopSound();
+            victorySound.components.sound.playSound();
+          } else {
+            console.log("T'as pas gagné");
+            centerText.setAttribute("value", "");
+            centerText.setAttribute("visible", "false");
+            timer.setAttribute("visible", "true");
+            itemCounter.setAttribute("visible", "true");
+            backgroundMusic.components.sound.playSound();
+            victorySound.components.sound.stopSound();
+          }
+        },
+      });
       </script>
+
+
+
+
     </a-scene>
   </body>
 </html>
